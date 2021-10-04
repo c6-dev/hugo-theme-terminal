@@ -1,20 +1,11 @@
 {{ define "main" }}
-  {{ if .Content }}
-    <div class="index-content {{ if .Params.framed -}}framed{{- end -}}">
-      {{ .Content }}
+  {{ with .Content }}
+    <div class="index-content">
+      {{ . }}
     </div>
   {{ end }}
   <div class="posts">
-    {{ $isntDefault := not (or (eq (trim $.Site.Params.contentTypeName " ") "posts") (eq (trim $.Site.Params.contentTypeName " ") "")) }}
-    {{ $contentTypeName := cond $isntDefault (string $.Site.Params.contentTypeName) "posts" }}
-
-    {{ $PageContext := . }}
-    {{ if .IsHome }}
-      {{ $PageContext = .Site }}
-    {{ end }}
-    {{ $paginator := .Paginate (where $PageContext.RegularPages "Type" $contentTypeName) }}
-
-    {{ range $paginator.Pages }}
+    {{ range .Pages }}
       <div class="post on-list">
         <h1 class="post-title">
           <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
@@ -25,7 +16,7 @@
           </span>
           {{ with .Params.Author }}
             <span class="post-author">:: {{ . }}</span>
-          {{ end }}
+		  {{ end }}
 		  {{ with .Params.Version }}
             <span class="post-version">:: {{ . }}</span>
           {{ end }}
@@ -42,17 +33,17 @@
         {{ end }}
 		</div>
         {{ if .Params.Cover }}
-          <img src="{{ .Params.Cover | absURL }}" class="post-cover" alt="{{ .Title | plainify | default " " }}" />
+          <img src="{{ .Params.Cover | absURL }}" class="post-cover-list" alt="{{ .Title | plainify | default " " }}" />
         {{ end }}
 
         <div class="post-content">
           {{ if .Params.showFullContent }}
-          {{ .Content }}
+          {{ .Content}}
           {{ else if .Description }}
           {{ .Description | markdownify }}
           {{ else }}
           {{ if .Truncated }}
-          {{ .Summary }}
+          {{ .Summary}}
           {{ end }}
           {{ end }}
         </div>
